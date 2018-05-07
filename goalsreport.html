@@ -1,0 +1,88 @@
+{% extends "page_template.html" %}
+{% block pagesubmenu %}
+    <span class="breadcrumbs_nav">
+        <form id="student-list" method="GET" action="/api-apps/suggestgoals" style="display: block; margin: 22px 0">
+        <select id="student-list-id" name="list_id">
+            {% for list in student_list %}
+                <option value="{{ list.key }}">{{ list.name }}</option>
+            {% endfor %}
+        </select>
+        </form>
+    </span>
+{% endblock pagesubmenu %}
+
+{% block pagecontent %}
+
+<script type="text/javascript">
+    var access_token_key = {{ access_token_key }};
+    var access_token_secret = {{ access_token_secret }};
+    var list_id = {{ list_id }};
+    var allstudents = "allstudents";
+</script>
+
+<div id="devpanel" style="padding: 9px 23px;">
+    <div>
+        <h2>Class Goals</h2>
+        {% if callback %}
+	    <div>
+	        <b>Coach email: <u>{{ class_goals.coach_email }}</u></b>
+	        <table width="812" cellspacing="5">
+		    {% for student_goals in class_goals.goals %}
+		        <tr>
+		        <td bgcolor="cccccc" width="116">{{ student_goals.user }}</td>
+		        {% for goal in student_goals.goals %}
+		            <td width="116">{{ goal }}</td>
+	                {% endfor %}
+		        </tr>
+		    {% endfor %}
+	        </table>
+	        <p>
+            </div>
+            <div>
+		<form id="goals-report" method="GET" action="/api-apps/goalsreport" style="display: block; margin: 22px 0">
+                <input id="access-token-key" name="access_token_key" type="hidden" value={{ access_token_key }} />
+	        <input id="access-token-secret" name="access_token_secret" type="hidden" value={{ access_token_secret }} />
+                <input id="list-id" name="list_id" type="hidden" value={{ list_id }} />
+	        <input id="coach-email" name="coach_email" type="hidden" value="{{ class_goals.coach_email }}" />
+                <input id="goals-report-submit" type="submit" value="Download class goals (CSV)" />
+	        </form>
+
+	        <form id="class-report" method="GET" action="/api-apps/classreport" style="display: block; margin: 22px 0">
+                <input id="access-token-key" name="access_token_key" type="hidden" value={{ access_token_key }} />
+	        <input id="access-token-secret" name="access_token_secret" type="hidden" value={{ access_token_secret }} />
+	        <input id="activity-log" name="activity_log" type="hidden" value=0 />
+	        <input id="goals-data" name="goals_data" type="hidden" value=1 />
+                <input id="list-id" name="list_id" type="hidden" value={{ list_id }} />
+	        <input id="coach-email" name="coach_email" type="hidden" value="{{ class_goals.coach_email }}" />
+                <input id="class-report-submit" type="submit" value="Generate goals dashboard (XLS)" />
+	        </form>
+	    </div>
+
+	    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+            <script>
+                $("#student-list").change(function(e) {
+                    window.location = "/api-apps/goalsreport?list_id=" + $("#student-list-id").val() + "&access_token_key=" + access_token_key + "&access_token_secret=" + access_token_secret
+                });
+
+                $(document).ready(function() {
+		    $("#class-report").submit(function(e) {
+		        var myDate = new Date()
+			tz_offset = -1 * myDate.getTimezoneOffset()
+			$(this).append($("<input>").attr({name:"tz_offset", value:tz_offset, type:"hidden"}))
+                    });
+
+                    if (list_id == "") {
+                        $("#student-list-id").val(allstudents);
+                    }
+                    else {
+                        $("#student-list-id").val(list_id);
+                    }
+	        });
+	    </script>
+
+        {% else %}
+	    <a id="auth_link" class="authenticate-user" href="{{login_url|escape}}">Log in to your Khan Academy account</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock pagecontent %}

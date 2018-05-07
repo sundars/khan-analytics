@@ -1,0 +1,62 @@
+{% extends "page_template.html" %}
+{% block pagesubmenu %}
+    <span class="breadcrumbs_nav">
+        <a href="http://www.khanacademy.org/classreport">Coach</a>
+    </span>
+{% endblock pagesubmenu %}
+
+{% block pagecontent %}
+
+<div id="devpanel" style="padding: 9px 23px;">
+    <div>
+        <h2>Class Goals</h2>
+        {% if callback %}
+	    <div>
+	        <b>Coach email: <u>{{ class_goals.coach_email }}</u></b>
+	        <table width="812" cellspacing="5">
+		    {% for student_goals in class_goals.goals %}
+		        <tr>
+		        <td bgcolor="cccccc" width="116">{{ student_goals.user }}</td>
+		        {% for goal in student_goals.goals %}
+		            <td width="116">{{ goal }}</td>
+	                {% endfor %}
+		        </tr>
+		    {% endfor %}
+	        </table>
+	        <p>
+            </div>
+            <div>
+	        <form id="goals-report-admin" method="GET" action="/api-apps/goalsreportadmin" style="display: block; margin: 22px 0">
+                <input id="access-token-key" name="access_token_key" type="hidden" value="{{ access_token_key }}" />
+	        <input id="access-token-secret" name="access_token_secret" type="hidden" value="{{ access_token_secret }}" />
+	        Coach on behalf of (ensure that logged on user has privileged access):<input id="proxy-coach-email" name="proxy_coach_email" type="text" />
+                <input id="goals-report-admin-submit" type="submit" value="Downloads class goals on behalf of coach (CSV)" />
+	        </form>
+	        <form id="class-report-admin" method="GET" action="/api-apps/classreport" style="display: block; margin: 22px 0">
+                <input id="access-token-key" name="access_token_key" type="hidden" value="{{ access_token_key }}" />
+		<input id="access-token-secret" name="access_token_secret" type="hidden" value="{{ access_token_secret }}" />
+		<input id="goals-data" name="goals_data" type="hidden" value=1 />
+		<input id="proxy-coach" name="proxy_coach" type="hidden" value="{{ class_goals.coach_email }}" />
+	        Coach on behalf of (ensure that logged on user has privileged access):<input id="coach-email" name="coach_email" type="text" />
+		<input id="activity-log" name="activity_log" type="checkbox" value=1 />Include activity log<br>
+                <input id="class-report-admin-submit" type="submit" value="Generate goals dashboard on behalf of coach (XLS)" />
+	        </form>
+	    </div>
+
+	    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+	    <script>
+                $(document).ready(function(){
+		    $("#class-report-admin").submit(function(e) {
+	                var myDate = new Date()
+			tz_offset = -1 * myDate.getTimezoneOffset()
+			$(this).append($("<input>").attr({name:"tz_offset", value:tz_offset, type:"hidden"}))
+		    });
+		});
+	    </script>
+
+        {% else %}
+	    <a id="auth_link" class="authenticate-user" href="{{login_url|escape}}">Log in to your Khan Academy account</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock pagecontent %}

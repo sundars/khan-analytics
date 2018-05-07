@@ -1,0 +1,4 @@
+total_storage_limit: 250M
+queue:
+- name: default
+  rate: 50/s

@@ -1,0 +1,37 @@
+{% extends "page_template.html" %}
+{% block pagesubmenu %}
+    <span class="breadcrumbs_nav">
+        <a href="/translations/subtitlestatus">Khan Academy Subtitling</a>
+    </span>
+{% endblock pagesubmenu %}
+
+{% block pagecontent %}
+
+<div id="subtitleactions" style="padding: 9px 23px;">
+    <div>
+        <h2>Subtitle translation actions</h2>
+        <b> Click on any of the links below in playlist {{ playlist }}.<br>
+            Then translate subititles into {{ language }}.<br>
+            Thanks for your efforts!</b>
+        <p>
+        <table width="810" cellspacing="5" border="0">
+            <tr>
+                <td> <u>Video Title</u> </td>
+                <td> <u>Percent Translated</u> </td>
+                <td> <u>URL for translation</u> </td>
+            <tr>
+            {% for output in output_list %}
+            <tr>
+                <td> {{ output.video }} </td>
+                <td> {{ output.percent_complete }}% </td>
+                {% if output.english_complete %}
+                <td> <a href='http://www.universalsubtitles.org/en/onsite_widget/?config={"videoID":"{{ output.video_id }}","videoURL":"http://www.youtube.com/watch?v={{ output.youtube_id }}","effectiveVideoURL":"http://www.youtube.com/watch?v={{ output.youtube_id }}","languageCode":"{{ output.language_code }}","originalLanguageCode":null,"subLanguagePK":null,"baseLanguagePK":{{ output.base_language_id }}}' target="_blank">Translate subtitles... </a> </td>
+                {% else %}
+                <td> <a href='http://www.universalsubtitles.org/en/videos/{{ output.video_id }}' target="_blank">Create English subtitles... </a> </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endblock pagecontent %}

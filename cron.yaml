@@ -1,0 +1,10 @@
+cron:
+- description: Update exercise data from khanacademy
+  url: /api-apps/admin/updateexercisedata
+  schedule: every day 00:00
+  timezone: US/Pacific
+
+- description: Update subtitle data from Universal Subtitles
+  url: /translations/admin/updatesubtitles
+  schedule: every day 01:00
+  timezone: US/Pacific

@@ -1,0 +1,264 @@
+{% extends "page_template.html" %}
+{% block pagesubmenu %}
+    <span class="breadcrumbs_nav">
+        <a href="/translations/subtitlestatus">Khan Academy Subtitling</a>
+    </span>
+{% endblock pagesubmenu %}
+
+{% block pagecontent %}
+
+<script type="text/javascript">
+    var language = {{ language }};
+    var playlist = {{ playlist }};
+</script>
+
+<div id="subtitlestatus" style="padding: 9px 23px;">
+    <div>
+        <h2>Subtitle translation status</h2>
+        {% if display %}
+          {% if language_table %}
+            <form id="filter-subtitle" method="GET" action="/translations/subtitlestatus" style="display: block; margin: 22px 0">
+                <table width="810" cellspacing="5" border="0">
+                <tr>
+                    <td>
+                        <b>Select Language</b><br>
+                        <select id="language-id" name="language">
+                            <option value="all"> All languages </option>
+                            {% for language in languages %}
+                                <option value = "{{ language }}"> {{ language }} </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <b>Select Playlist</b><br>
+                        <select id="playlist-id" name="playlist">
+                            <option value="all"> All playlists </option>
+                            {% for playlist in playlists %}
+                                <option value = "{{ playlist }}"> {{ playlist }} </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <br>
+                        <a href="#" class="random-action">Let me subtitle...</a>
+                    </td>
+                </tr>
+                </table>
+                <br>
+                <input id="display" name="display" value="1" type="hidden" />
+                <input id="filter-subtitle-submit" type="submit" value="Display Subtitling Status" />
+                <p>
+                <b>Subtitling status for playlist {{ playlist }} with {{ total_videos }} total videos</b><p>
+                <table width="810" cellspacing="5">
+                    <tr>
+                        <td> <u>Language</u> </td>
+                        <td> <u>Videos Subtitled</u> </td>
+                        <td> <u>% of Total</u> </td>
+                        <td> <u>% of English</u> </td>
+                        <td> <u>Detailed view</u> </td>
+                    </tr>
+                    {% for language_stat in languages_stats %}
+                    <tr>
+                        <td> {{ language_stat.language }} </td>
+                        <td> {{ language_stat.translated_100 }} </td>
+                        <td> {{ language_stat.percent_of_total }}% </td>
+                        <td> {{ language_stat.percent_of_english }}% </td>
+                        <td> <a href='/translations/subtitleactions?playlist={{ pl }}&language={{ language_stat.language }}'> Take action... </a> </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </form>
+
+            <form id="download-subtitle" method="GET" action="/translations/subtitlestatus" style="display: block; margin: 22px 0">
+                <input id="download" name="download" value="1" type="hidden" />
+                <input id="download-subtitle-submit" type="submit" value="Download Detailed Status" />
+            </form>
+
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+            <script>
+                $(document).ready(function() {
+                    $("#language-id").val(language)
+                    $("#playlist-id").val(playlist)
+                });
+
+                $("#filter-subtitle").submit(function(e) {
+                    if ($("#playlist-id").val() == "all" && $("#language-id").val() == "all") {
+                        $(this).append($("<input>").attr({id:"download", name:"download", value:"1", type:"hidden"}))
+                        alert("All playlists and all languages requested, downloading excel report instead of displaying...")
+                    }
+                });
+
+                $("#download-subtitle").submit(function(e) {
+                    var lang = $("#language-id").val()
+                    var pl = $("#playlist-id").val()
+
+                    $(this).append($("<input>").attr({id:"language", name:"language", value:lang, type:"hidden"}))
+                    $(this).append($("<input>").attr({id:"playlist", name:"playlist", value:pl, type:"hidden"}))
+                });
+
+                $(".random-action").click(function(e) {
+                    var playlist = $("#playlist-id").val()
+                    var language = $("#language-id").val()
+                    if (playlist == 'all' || language == 'all') {
+                        alert("Please choose a playlist and a language before proceeding to subtitling")
+                    }
+                    else {
+                        window.location = "/translations/subtitleactions?random=1&playlist=" + $("#playlist-id").val() + "&language=" + $("#language-id").val()
+                    }
+                    e.preventDefault();
+                });
+            </script>
+          {% else %}
+            <form id="filter-subtitle" method="GET" action="/translations/subtitlestatus" style="display: block; margin: 22px 0">
+                <table width="810" cellspacing="5" border="0">
+                <tr>
+                    <td>
+                        <b>Select Language</b><br>
+                        <select id="language-id" name="language">
+                            <option value="all"> All languages </option>
+                            {% for language in languages %}
+                                <option value = "{{ language }}"> {{ language }} </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <b>Select Playlist</b><br>
+                        <select id="playlist-id" name="playlist">
+                            <option value="all"> All playlists </option>
+                            {% for playlist in playlists %}
+                                <option value = "{{ playlist }}"> {{ playlist }} </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <br>
+                        <a href="#" class="random-action">Let me subtitle...</a>
+                    </td>
+                </tr>
+                </table>
+                <br>
+                <input id="display" name="display" value="1" type="hidden" />
+                <input id="filter-subtitle-submit" type="submit" value="Display Subtitling Status" />
+                <p>
+                <b>Subtitling status for language {{ language }}
+                </b><p>
+                <table width="810" cellspacing="5">
+                    <tr>
+                        <td> <u>Playlist</u> </td>
+                        <td> <u>Total Videos</u> </td>
+                        <td> <u>Videos Subtitled</u> </td>
+                        <td> <u>% of Total</u> </td>
+                        <td> <u>% of English</u> </td>
+                        <td> <u>Detailed view</u> </td>
+                    </tr>
+                    {% for pl_stat in playlists_stats %}
+                    <tr>
+                        <td> {{ pl_stat.playlist }} </td>
+                        <td> {{ pl_stat.total_videos }} </td>
+                        <td> {{ pl_stat.translated_100 }} </td>
+                        <td> {{ pl_stat.percent_of_total }}% </td>
+                        <td> {{ pl_stat.percent_of_english }}% </td>
+                        <td> <a href='/translations/subtitleactions?playlist={{ pl_stat.playlist }}&language={{ lang }}'> Take action... </a> </td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </form>
+
+            <form id="download-subtitle" method="GET" action="/translations/subtitlestatus" style="display: block; margin: 22px 0">
+                <input id="download" name="download" value="1" type="hidden" />
+                <input id="download-subtitle-submit" type="submit" value="Download Detailed Status" />
+            </form>
+
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+            <script>
+                $(document).ready(function() {
+                    $("#language-id").val(language)
+                    $("#playlist-id").val(playlist)
+                });
+
+                $("#filter-subtitle").submit(function(e) {
+                    if ($("#playlist-id").val() == "all" && $("#language-id").val() == "all") {
+                        $(this).append($("<input>").attr({id:"download", name:"download", value:"1", type:"hidden"}))
+                        alert("All playlists and all languages requested, downloading excel report instead of displaying...")
+                    }
+                });
+
+                $("#download-subtitle").submit(function(e) {
+                    var lang = $("#language-id").val()
+                    var pl = $("#playlist-id").val()
+
+                    $(this).append($("<input>").attr({id:"language", name:"language", value:lang, type:"hidden"}))
+                    $(this).append($("<input>").attr({id:"playlist", name:"playlist", value:pl, type:"hidden"}))
+                });
+
+                $(".random-action").click(function(e) {
+                    var playlist = $("#playlist-id").val()
+                    var language = $("#language-id").val()
+                    if (playlist == 'all' || language == 'all') {
+                        alert("Please choose a playlist and a language before proceeding to subtitling")
+                    }
+                    else {
+                        window.location = "/translations/subtitleactions?random=1&playlist=" + $("#playlist-id").val() + "&language=" + $("#language-id").val()
+                    }
+                    e.preventDefault();
+                });
+            </script>
+          {% endif %}
+        {% else %}
+            <form id="filter-subtitle" method="GET" action="/translations/subtitlestatus" style="display: block; margin: 22px 0">
+                <table width="810" cellspacing="5" border="0">
+                <tr>
+                    <td>
+                        <b>Select Language</b><br>
+                        <select id="language-id" name="language">
+                            <option value="all"> All languages </option>
+                            {% for language in languages %}
+                                <option value = "{{ language }}"> {{ language }} </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <b>Select Playlist</b><br>
+                        <select id="playlist-id" name="playlist">
+                            <option value="all"> All playlists </option>
+                            {% for playlist in playlists %}
+                                <option value = "{{ playlist }}"> {{ playlist }} </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <br>
+                        <a href="#" target="_blank" class="random-action">Let me subtitle...</a>
+                    </td>
+                </tr>
+                </table>
+                <br>
+                <input id="display" name="display" value="1" type="hidden" />
+                <input id="filter-subtitle-submit" type="submit" value="Display Subtitling Status" />
+            </form>
+
+            <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+            <script>
+                $("#filter-subtitle").submit(function(e) {
+                    if ($("#playlist-id").val() == "all" && $("#language-id").val() == "all") {
+                        $(this).append($("<input>").attr({id:"download", name:"download", value:"1", type:"hidden"}))
+                        alert("All playlists and all languages requested, downloading excel report instead of displaying...")
+                    }
+                });
+
+                $(".random-action").click(function(e) {
+                    var playlist = $("#playlist-id").val()
+                    var language = $("#language-id").val()
+                    if (language == 'all') {
+                        alert("Please choose a playlist and a language before proceeding to subtitling")
+                    }
+                    else {
+                        window.open("/translations/subtitleactions?random=1&playlist=" + $("#playlist-id").val() + "&language=" + $("#language-id").val())
+                    }
+                    e.preventDefault();
+                });
+            </script>
+        {% endif %}
+    </div>
+</div>
+{% endblock pagecontent %}

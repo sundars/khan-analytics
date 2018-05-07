@@ -1,0 +1,33 @@
+{% extends "page_template.html" %}
+{% block pagesubmenu %}
+    <span class="breadcrumbs_nav">
+        <a href="http://www.khanacademy.org/classreport">Coach</a>
+    </span>
+{% endblock pagesubmenu %}
+			
+{% block pagecontent %}
+
+<div id="devpanel" style="padding: 9px 23px;">
+  <div>
+    <h2>Upload common core map</h2>
+    {% if not done %}
+        {% if callback %}
+            Upload a CSV file which maps common core standsard to KA exercises (need admin access)
+            <form id="upload" method="POST" action="/api-apps/admin/uploadcommoncore" enctype="multipart/form-data" style="display: block; margin: 22px 0">
+            <input id="coach-email" name="coach_email" type="hidden" value="{{ coach_email }}" />
+            <input id="access-token-key" name="access_token_key" type="hidden" value="{{ access_token_key }}" />
+	    <input id="access-token-secret" name="access_token_secret" type="hidden" value="{{ access_token_secret }}" />
+	    <input id="commoncore" name="commoncore" type="file" /><br><br>
+            <input id="upload" type="submit" value="Update common core mapping" />
+	    </form>
+
+        {% else %}
+	    <a id="auth_link" class="authenticate-user" href="{{login_url|escape}}">Log in to your Khan Academy account</a>
+        {% endif %}
+
+    {% else %}
+        Common core mapping updated!
+    {% endif %}
+  </div>
+</div>
+{% endblock pagecontent %}

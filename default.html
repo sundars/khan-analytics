@@ -1,0 +1,20 @@
+{% extends "page_template.html" %}
+{% block pagesubmenu %}
+    <span class="breadcrumbs_nav">
+        <a href="http://www.khanacademy.org">Home</a>
+    </span>
+{% endblock pagesubmenu %}
+
+{% block pagecontent %}
+<div id="devpanel" style="padding: 9px 23px;">
+  <div>
+	  <h2>Khan Academy offline reports</h2>
+	  <ul>
+		  <li><a href="/api-apps/classreport">Class Report</a> (coach access)
+		  <li><a href="/api-apps/goalsreport">Goals Report</a> (coach access)
+		  <li><a href="/api-apps/suggestgoals">Suggest goals for your students</a> (coach access)
+		  <li><a href="/api-apps/goals">Student Goal Setting</a> (student access)
+	  </ul>
+  </div>
+</div>
+{% endblock pagecontent %}

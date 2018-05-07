@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html itemscope itemtype="http://schema.org/Organization"
+    xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:og="http://opengraphprotocol.org/schema/"
+    xmlns:fb="http://www.facebook.com/2008/fbml" {{ data_require }}>
+      <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8"/>
+
+        <script type="text/javascript">
+	    var _sf_startpt=(new Date()).getTime(); {# for Chartbeat Analytics #}
+        </script>
+
+        <title>{% block meta_page_title %}{% endblock meta_page_title %}Khan Academy</title>
+        <meta name="description" content="{% block meta_description %}
+        Khan Academy is on a mission to provide a free world-class education to anyone anywhere. With over 2,600 videos covering everything from arithmetic to physics, finance, and history and 200 practice exercises, we're helping students learn whatever they want, whenever they want, at their own pace.
+        {% endblock %}" />
+        <meta name="keywords" content="{% block meta_keywords %}khan academy, learn, videos, lectures, practice, exercises{% endblock %}" />
+        <meta property="og:title" content="The Khan Academy"/>
+        <meta property="og:type" content="non_profit"/>
+        <meta property="og:url" content="http://www.khanacademy.org"/>
+        <meta property="og:image" content="/images/handtreehorizontal_facebook.png"/>
+        <meta property="og:site_name" content="khanacademy.org"/>
+
+        <meta property="og:description"
+              content="Khan Academy is on a mission to provide a free world-class education to anyone anywhere. With over 2,600 videos covering everything from arithmetic to physics, finance, and history and 200 practice exercises, we're helping students learn whatever they want, whenever they want, at their own pace."/>
+        <link rel="shortcut icon" href="/favicon.ico?leaf">
+        <link rel="apple-touch-icon" href="/images/apple-touch-icon.png"/>
+
+        <link rel='stylesheet' type='text/css' href='/stylesheets/default.css'/><link rel='stylesheet' type='text/css' href='/stylesheets/rating.css'/><link rel='stylesheet' type='text/css' href='/stylesheets/stylesheet.css'/><link rel='stylesheet' type='text/css' href='/stylesheets/menu.css'/><link rel='stylesheet' type='text/css' href='/stylesheets/profile.css'/><link rel='stylesheet' type='text/css' href='/stylesheets/museo-sans.css'/><link rel='stylesheet' type='text/css' href='/stylesheets/jquery-ui-1.8.16.custom.css'/><link rel='stylesheet' type='text/css' href='/stylesheets/nav-header-footer.css'/>
+
+    </head>
+
+    <body class="light">
+    <div id="outer-wrapper">
+    <div id="page-container">
+    <div id="page-container-inner">
+        <div id="fb-root"></div>
+
+        <script>document.writeln('<style scoped type="text/css">a[href="#"], .requires_script { visibility: visible; }</style>');</script>
+
+            <header>
+                <div id="top-header">
+                    <div id="top-header-links">
+			<span class="page_links" id="page_auth">
+			    {% if logged_in %}
+			        <a href="/">{{ username }}</a>
+				<span class="separator"></span>
+				<a id="page_logout" href="{{ logout_url|escape }}">Logout</a>
+			    {% else %}
+			    <a id="page_logout" href="{{  login_url|escape }}">Login</a>
+			    {% endif %}
+                            <span class="separator"></span>
+                            <a href="http://www.khanacademy.org/contribute" id="donate-link">Donate</a>
+                        </span>
+                        <div class="clear"></div>
+                        <div id="nav-and-search">
+                            <div id="sitewide-navigation">
+                                <nav>
+                                  <span class="links">
+                                      <a href="http://www.khanacademy.org/#browse">Watch</a>
+                                    <a href="http://www.khanacademy.org/exercisedashboard?k">Practice</a>
+                                    <a href="http://www.khanacademy.org/class_profile">Coach</a>
+                                    <a href="http://www.khanacademy.org/contribute">Volunteer</a>
+                                    <a href="http://www.khanacademy.org/about">About</a>
+                                    </span>
+                                </nav>
+                            </div>
+                            <div class="clear"></div>
+                        </div>
+                </div>
+                    <div id="logo">
+                        <a id="logo-image" href="/" title="Take me home!"></a>
+                    </div>
+                    <div id="stats">
+                        <span id="page_visitors">
+                                <span id="page_num_visitors">
+                                    <!-- Content will get populated by javacript at end of page -->
+                                </span>&nbsp;lessons delivered
+                        </span>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+
+
+                <nav id="page_sub_nav">
+                    {% block pagesubmenu %}<b>{% block pagetitle %}{% endblock pagetitle %}</b>
+                    {% endblock pagesubmenu %}
+                </nav>
+                {% block pagemessage %}
+
+                {% endblock pagemessage %}
+            </header>
+            {% block pagecontent %}
+            {% endblock pagecontent %}
+            <div id="end-of-page-spacer" style="padding: 10px;">&nbsp;</div>
+
+    </div>
+    </div>
+    </div>
+    <div class="push"></div>
+    {% block pagefooter %}
+    {% include "page_footer_short.html" %}
+    {% endblock %}
+
+    {% block bottompagescript %}
+    {% endblock bottompagescript %}
+
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+    {% profiler_includes %}
+
+    </body>
+</html>

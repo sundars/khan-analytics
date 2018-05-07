@@ -1,0 +1,77 @@
+{% extends "page_template.html" %}
+{% block pagesubmenu %}
+    <span class="breadcrumbs_nav">
+        {% if not student_list %}
+        <a href="http://www.khanacademy.org/classreport">Coach</a>
+        {% else %}
+        <form id="student-list" method="GET" action="/api-apps/suggestgoals" style="display: block; margin: 22px 0">
+        <select id="student-list-id" name="list_id">
+            {% for list in student_list %}
+                <option value="{{ list.key }}">{{ list.name }}</option>
+            {% endfor %}
+        </select>
+        </form>
+        {% endif %}
+    </span>
+{% endblock pagesubmenu %}
+			
+{% block pagecontent %}
+
+<script type="text/javascript">
+    var access_token_key = {{ access_token_key }};
+    var access_token_secret = {{ access_token_secret }};
+    var list_id = {{ list_id }};
+    var allstudents = "allstudents";
+</script>
+
+<div id="devpanel" style="padding: 9px 23px;">
+  <div>
+    <h2>Generate class report</h2>
+    {% if not done %}
+        {% if callback %}
+            Generating class report for coach: <u>{{ coach_email }}</u>
+            <form id="generate-report" method="GET" action="/api-apps/classreport" style="display: block; margin: 22px 0">
+            <input id="coach-email" name="coach_email" type="hidden" value="{{ coach_email }}" />
+            <input id="access-token-key" name="access_token_key" type="hidden" value={{ access_token_key }} />
+	    <input id="access-token-secret" name="access_token_secret" type="hidden" value={{ access_token_secret }} />
+	    <input id="list-id" name="list_id" type="hidden" value={{ list_id }} />
+            <input id="activity-log" name="activity_log" type="checkbox" value=1 /> Include activity log<br>
+            <input id="generate-report-submit" type="submit" value="Generate report" />
+	    </form>
+	    This report is queued up might take an hour or so to generate, once complete the result will
+	    be emailed to <u>{{ coach_email }}</u><br><br>
+	    If you include activity log it takes longer for the report to generate.
+
+	    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+            <script>
+                $("#student-list").change(function(e) {
+                    window.location = "/api-apps/classreport?list_id=" + $("#student-list-id").val() + "&access_token_key=" + access_token_key + "&access_token_secret=" + access_token_secret
+                });
+
+                $(document).ready(function(){
+                    $("#generate-report").submit(function(e) {
+                        var myDate = new Date()
+                        tz_offset = -1 * myDate.getTimezoneOffset()
+			$(this).append($("<input>").attr({name:"tz_offset", value:tz_offset, type:"hidden"}))
+                    });
+
+                    if (list_id == "") {
+                        $("#student-list-id").val(allstudents);
+                    }
+                    else {
+                        $("#student-list-id").val(list_id);
+                    }
+                });
+            </script>
+
+        {% else %}
+	    <a id="auth_link" class="authenticate-user" href="{{login_url|escape}}">Log in to your Khan Academy account</a>
+        {% endif %}
+
+    {% else %}
+        Your class report has been queued up for generation. It could take upto an hour for completion.<br><br>
+        Once completed it will be mailed to you, please check your email (<u>{{ coach_email }}</u>) for attachments.
+    {% endif %}
+  </div>
+</div>
+{% endblock pagecontent %}

@@ -1,0 +1,179 @@
+{% extends "page_template.html" %}
+{% block pagesubmenu %}
+    <span class="breadcrumbs_nav">
+        <a href="http://www.khanacademy.org/profile">Student</a>
+    </span>
+{% endblock pagesubmenu %}
+
+{% block pagecontent %}
+
+<div id="devpanel" style="padding: 9px 23px;">
+  <div>
+    <h2>Set goals</h2>
+    {% if not done %}
+        {% if callback %}
+	    <div>
+	    {% if current_goals %}
+	        <b>Current goals:</b>
+	        <table width="810" cellspacing="5">
+		    <tr>
+		    {% for current_goal in current_goals %}
+		        <td width="135">{{ current_goal }}</td>
+	            {% endfor %}
+	            </tr>
+	        </table>
+	        <p>
+            {% endif %}
+            </div>
+            <div>
+	        <b>Select goals for: <u>{{ student_email }}</u></b>
+	        <form id="set-goals" method="GET" action="/api-apps/goals" style="display: block; margin: 22px 0">
+		    Goal 1: <br><i>(for example: Order of Operations)</i><br>
+		    <select id="goal-1" name="goal_1">
+			<option value="">Choose Goal</option>
+			<optgroup label="----------------Coach Suggestions----------------">
+			{% for exercise in coach_suggestions %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="-------------Khan Suggested Exercises-------------">
+			{% for exercise in suggested_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="------------------All Exercises------------------">
+			{% for exercise in all_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+		    </select>
+		    <p>
+		    Goal 2: <br><i>(for example: Order of Operations)</i><br>
+		    <select id="goal-2" name="goal_2">
+			<option value="">Choose Goal</option>
+			<optgroup label="----------------Coach Suggestions----------------">
+			{% for exercise in coach_suggestions %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="-------------Khan Suggested Exercises-------------">
+			{% for exercise in suggested_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="------------------All Exercises------------------">
+			{% for exercise in all_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+		    </select>
+		    <p>
+		    Goal 3: <br><i>(for example: Order of Operations)</i><br>
+		    <select id="goal-3" name="goal_3">
+			<option value="">Choose Goal</option>
+			<optgroup label="----------------Coach Suggestions----------------">
+			{% for exercise in coach_suggestions %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="-------------Khan Suggested Exercises-------------">
+			{% for exercise in suggested_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="------------------All Exercises------------------">
+			{% for exercise in all_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+		    </select>
+		    <p>
+		    Goal 4: <br><i>(for example: Order of Operations)</i><br>
+		    <select id="goal-4" name="goal_4">
+			<option value="">Choose Goal</option>
+			<optgroup label="----------------Coach Suggestions----------------">
+			{% for exercise in coach_suggestions %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="-------------Khan Suggested Exercises-------------">
+			{% for exercise in suggested_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="------------------All Exercises------------------">
+			{% for exercise in all_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+		    </select>
+		    <p>
+		    Goal 5: <br><i>(for example: Order of Operations)</i><br>
+		    <select id="goal-5" name="goal_5">
+			<option value="">Choose Goal</option>
+			<optgroup label="----------------Coach Suggestions----------------">
+			{% for exercise in coach_suggestions %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="-------------Khan Suggested Exercises-------------">
+			{% for exercise in suggested_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="------------------All Exercises------------------">
+			{% for exercise in all_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+		    </select>
+		    <p>
+		    Goal 6: <br><i>(for example: Order of Operations)</i><br>
+		    <select id="goal-6" name="goal_6">
+			<option value="">Choose Goal</option>
+			<optgroup label="----------------Coach Suggestions----------------">
+			{% for exercise in coach_suggestions %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="-------------Khan Suggested Exercises-------------">
+			{% for exercise in suggested_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+			<optgroup label="------------------All Exercises------------------">
+			{% for exercise in all_exercises %}
+			    <option value="{{ exercise }}">{{ exercise }} </option>
+			{% endfor %}
+			</optgroup>
+		    </select>
+		    <p>
+                <input id="access-token-key" name="access_token_key" type="hidden" value="{{ access_token_key }}" />
+	        <input id="access-token-secret" name="access_token_secret" type="hidden" value="{{ access_token_secret }}" />
+		<input id="student-email" name="student_email" type="hidden" value="{{ student_email }}" />
+		<input id="send-email" name="send_email" type="checkbox" value=1 checked />Send an email with my selected goals<br>
+                <input id="set-goals-submit" type="submit" value="Submit goals" />
+	    </form>
+
+	    </div>
+
+        {% else %}
+	    <a id="auth_link" class="authenticate-user" href="{{login_url|escape}}">Log in to your Khan Academy account</a>
+        {% endif %}
+
+    {% else %}
+	<div>
+	Current goals for: <u>{{ student_email }}</u>
+	<table width="810" cellspacing="5">
+	    <tr>
+	    {% for current_goal in current_goals %}
+	        <td width="130">{{ current_goal }}</td>
+	    {% endfor %}
+	    </tr>
+	</table>
+        </div><p>
+        Thank you for submitting your goals!
+    {% endif %}
+  </div>
+</div>
+{% endblock pagecontent %}

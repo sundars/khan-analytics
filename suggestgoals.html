@@ -1,0 +1,264 @@
+{% extends "page_template.html" %}
+{% block pagesubmenu %}
+    <span class="breadcrumbs_nav">
+        <form id="student-list" method="GET" action="/api-apps/suggestgoals" style="display: block; margin: 22px 0">
+        <select id="student-list-id" name="list_id">
+            {% for list in student_list %}
+                <option value="{{ list.key }}">{{ list.name }}</option>
+            {% endfor %}
+        </select>
+        </form>
+    </span>
+{% endblock pagesubmenu %}
+
+{% block pagecontent %}
+
+<script type="text/javascript">
+	var suggestions = {{ current_suggestions }};
+	var grade = {{ filter_grade }};
+        var domain = {{ filter_domain }};
+        var list_id = {{ list_id }};
+        var access_token_key = {{ access_token_key }};
+        var access_token_secret = {{ access_token_secret }};
+        var coach_email = {{ coach_email }};
+        var allstudents = "allstudents";
+</script>
+
+<div id="suggestgoals" style="padding: 9px 23px;">
+  <div>
+    <h2>Suggest goals</h2>
+    {% if not done %}
+        {% if callback %}
+            {% if list_all %}
+	    <div>
+		<table width="600" cellspacing="5" border="0">
+	        <tr>
+	        <td>
+		<b>All exercises</b>
+		<form id="filter-goals" method="GET" action="/api-apps/suggestgoals" style="display: block; margin: 22px 0">
+		    Filter by keywords: <input id="cc-keywords" name="cc_keywords" value="{{ cc_keywords }}" type="text"/>
+                    <br>
+                    <input id="access-token-key" name="access_token_key" type="hidden" value={{ access_token_key }} />
+	            <input id="access-token-secret" name="access_token_secret" type="hidden" value={{ access_token_secret }} />
+                    <input id="filter-goals-submit" type="submit" value="Filter" />
+	        </form>
+	        </td>
+	        <td>
+		<form id="commoncore" method="GET" action="/api-apps/suggestgoals" style="display: block; margin: 22px 0">
+                    <input id="access-token-key" name="access_token_key" type="hidden" value={{ access_token_key }} />
+	            <input id="access-token-secret" name="access_token_secret" type="hidden" value={{ access_token_secret }} />
+		    <input id="common-core" name="common_core" type="hidden" value=1 />
+                    <input id="commoncore-submit" type="submit" value="Filter by Common Core" />
+	        </form>
+	        </td>
+	        </tr>
+	        </table>
+	    </div>
+            {% else %}
+	    <div>
+		<table width="600" cellspacing="5" border="0">
+	        <tr>
+	        <td>
+		<form id="list-all" method="GET" action="/api-apps/suggestgoals" style="display: block; margin: 22px 0">
+                    <input id="access-token-key" name="access_token_key" type="hidden" value={{ access_token_key }} />
+	            <input id="access-token-secret" name="access_token_secret" type="hidden" value={{ access_token_secret }} />
+		    <input id="list-all" name="list_all" type="hidden" value=1 />
+                    <input id="list-all-submit" type="submit" value="All exercises" />
+	        </form>
+	        </td>
+	        <td>
+		<b>Filter by Common Core</b>
+		<form id="filter-goals" method="GET" action="/api-apps/suggestgoals" style="display: block; margin: 22px 0">
+                    <select id="cc-grade" name="cc_grade">
+		    <option value="">Select Grade</option>
+		    {% for cc_grade in cc_grades %}
+		        <option value="{{ cc_grade }}">{{ cc_grade }}</option>
+		    {% endfor %}
+                    </select>
+                    <select id="cc-domain" name="cc_domain">
+		    <option value="">Select Domain</option>
+		    {% for cc_domain in cc_domains %}
+		        <option value="{{ cc_domain }}">{{ cc_domain }}</option>
+		    {% endfor %}
+                    </select>
+                    <br>
+                    <input id="access-token-key" name="access_token_key" type="hidden" value={{ access_token_key }} />
+	            <input id="access-token-secret" name="access_token_secret" type="hidden" value={{ access_token_secret }} />
+		    <input id="common-core" name="common_core" type="hidden" value=1 />
+                    <input id="filter-goals-submit" type="submit" value="Filter" />
+	        </form>
+	        </td>
+	        </tr>
+	        </table>
+	    </div>
+	    {% endif %}
+
+	    <div>
+		<b>Pick goals to suggest to students who have {{ coach_email }} as a coach</b><br>
+		<b>Currently suggested goals are checked</b> (<a href="#" class="clear-suggestions">clear suggestions</a>)<p>
+		<form id="suggest-goals" method="GET" action="/api-apps/suggestgoals" style="display: block; margin: 22px 0">
+		    <table width="960" cellspacing="5" border="0">
+			<tr>
+			<td>
+			    <table width="320" border="0">
+				{% for exercise in all_exercises_1 %}
+				    <tr>
+				    <td>
+				            <input type="checkbox" name="{{ exercise }}" value="{{ exercise }}">{{ exercise }}<br>
+				    </td>
+				    </tr>
+			        {% endfor %}
+			    </table>
+			</td>
+			<td>
+			    <table width="320" border="0">
+				{% for exercise in all_exercises_2 %}
+				    <tr>
+				    <td>
+				        <input type="checkbox" name="{{ exercise }}" value="{{ exercise }}">{{ exercise }}<br>
+				    </td>
+				    </tr>
+			        {% endfor %}
+			    </table>
+			</td>
+			<td>
+			    <table width="320" border="0">
+				{% for exercise in all_exercises_3 %}
+				    <tr>
+				    <td>
+				            <input type="checkbox" name="{{ exercise }}" value="{{ exercise }}">{{ exercise }}<br>
+				    </td>
+				    </tr>
+			        {% endfor %}
+			    </table>
+			</td>
+		        </tr>
+		    </table>
+                    {% if remaining %}
+		    <hr>
+		    <b>Other previously suggested goals</b><p>
+		    <table width="960" cellspacing="5" border="0">
+			<tr>
+			<td>
+			    <table width="320" border="0">
+				{% for exercise in remaining_1 %}
+				    <tr>
+				    <td>
+				            <input type="checkbox" name="{{ exercise }}" value="{{ exercise }}">{{ exercise }}<br>
+				    </td>
+				    </tr>
+			        {% endfor %}
+			    </table>
+			</td>
+			<td>
+			    <table width="320" border="0">
+				{% for exercise in remaining_2 %}
+				    <tr>
+				    <td>
+				            <input type="checkbox" name="{{ exercise }}" value="{{ exercise }}">{{ exercise }}<br>
+				    </td>
+				    </tr>
+			        {% endfor %}
+			    </table>
+			</td>
+			<td>
+			    <table width="320" border="0">
+				{% for exercise in remaining_3 %}
+				    <tr>
+				    <td>
+				            <input type="checkbox" name="{{ exercise }}" value="{{ exercise }}">{{ exercise }}<br>
+				    </td>
+				    </tr>
+			        {% endfor %}
+			    </table>
+			</td>
+		        </tr>
+		    </table>
+                    {% endif %}
+		    <p>
+                    <input id="access-token-key" name="access_token_key" type="hidden" value={{ access_token_key }} />
+	            <input id="access-token-secret" name="access_token_secret" type="hidden" value={{ access_token_secret }} />
+		    <input id="coach-email" name="coach_email" type="hidden" value={{ coach_email }} />
+		    <input id="list-id" name="list_id" type="hidden" value={{ list_id }} />
+                    <input id="suggest-goals-submit" type="submit" value="Suggest goals" />
+                </form>
+
+                <form id="class-report" method="GET" action="/api-apps/classreport" style="display: block; margin: 22px 0">
+                <input id="access-token-key" name="access_token_key" type="hidden" value={{ access_token_key }} />
+                <input id="access-token-secret" name="access_token_secret" type="hidden" value={{ access_token_secret }} />
+                <input id="activity-log" name="activity_log" type="hidden" value=0 />
+                <input id="list-id" name="list_id" type="hidden" value={{ list_id }} />
+                <input id="goals-data" name="goals_data" type="hidden" value=1 />
+                <input id="coach-suggested-goals" name="coach_suggested_goals" type="hidden" value=1 />
+                <input id="coach-email" name="coach_email" type="hidden" value={{ coach_email }} />
+                <input id="class-report-submit" type="submit" value="Generate goals dashboard vs. suggested goals (XLS)" />
+                </form>
+	    </div>
+
+	    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+            <script>
+                $("#student-list").change(function(e) {
+                    window.location = "/api-apps/suggestgoals?list_id="+ $("#student-list-id").val()
+                });
+                
+                $(document).ready(function() {
+                    $("#class-report").submit(function(e) {
+                        var myDate = new Date()
+                        tz_offset = -1 * myDate.getTimezoneOffset()
+                        $(this).append($("<input>").attr({name:"tz_offset", value:tz_offset, type:"hidden"}))
+                    });
+		    $.each(suggestions, function(i, l) {
+                        $('input[name="' + l + '"]').attr("checked", true);
+		    });
+
+                    $(".clear-suggestions").click(function(e) {
+                        console.log("HERE")
+                        $('input:checkbox').removeAttr("checked");
+                        e.preventDefault();
+		    });
+		    $("#cc-grade").val(grade);
+                    $("#cc-domain").val(domain);
+                    if (list_id == "") {
+                        $("#student-list-id").val(allstudents);
+                    }
+                    else {
+                        $("#student-list-id").val(list_id);
+                    }
+		});
+	    </script>
+
+        {% else %}
+	    <a id="auth_link" class="authenticate-user" href="{{login_url|escape}}">Log in to your Khan Academy account</a>
+        {% endif %}
+
+    {% else %}
+	<div>
+	The following goals will be suggested to students who have <u>{{ coach_email }}</u> as their coach<p>
+	<table style="width:100%" cellspacing="5" border="1.0">
+	    {% for goal in coach_suggestions %}
+	        <tr>
+	        <td>{{ goal }}</td>
+	        </tr>
+	    {% endfor %}
+        </table>
+        </div><p>
+
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
+        <script>
+            $("#student-list").change(function(e) {
+                window.location = "/api-apps/suggestgoals?list_id="+ $("#student-list-id").val() + "&access_token_key=" + access_token_key + "&access_token_secret=" + access_token_secret + "&coach_email=" + coach_email + "&display_only=1"
+            });
+
+	    $(document).ready(function() {
+                if (list_id == "") {
+                    $("#student-list-id").val(allstudents);
+                }
+                else {
+                    $("#student-list-id").val(list_id);
+                }
+            });
+        </script>
+    {% endif %}
+  </div>
+</div>
+{% endblock pagecontent %}
